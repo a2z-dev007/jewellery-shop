@@ -1,0 +1,1067 @@
+{
+  "info": {
+    "name": "CommerceOS API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "YOUR_JWT_ACCESS_TOKEN",
+      "type": "string"
+    },
+    {
+      "key": "storeId",
+      "value": "YOUR_STORE_OBJECT_ID",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register a new store and owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"owner@myjewelstore.com\",\n  \"password\": \"secretpassword\",\n  \"storeName\": \"My Jewel Store\",\n  \"slug\": \"myjewelstore\",\n  \"businessType\": \"Jewellery\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Log in to an existing account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@myjewelstore.com\",\n  \"password\": \"secretpassword\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Refresh expired access token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"jwt_refresh_token_here\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Log out of session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users & Staff",
+      "item": [
+        {
+          "name": "Invite a new staff member (Owner/Manager only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/invite",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "invite"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"staff@myjewelstore.com\",\n  \"role\": \"manager\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Accept invitation and register profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/accept-invite",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "accept-invite"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"invitation_jwt_token\",\n  \"name\": \"Jane Smith\",\n  \"password\": \"staffpassword\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "List all staff in the store (Owner/Manager only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update staff member role (Owner only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id/role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":id",
+                "role"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "id"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"staff\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Remove staff member (Owner only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "id"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Stores",
+      "item": [
+        {
+          "name": "Create a new store (Super Admin only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Salon\",\n  \"slug\": \"newsalon\",\n  \"businessType\": \"Salon\",\n  \"attributeSchemas\": [\n    {\n      \"key\": \"stylist\",\n      \"label\": \"Stylist Name\",\n      \"type\": \"string\",\n      \"required\": true\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "List all stores",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Verify domain config for reverse proxy dynamic TLS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores/verify-domain",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores",
+                "verify-domain"
+              ],
+              "query": [
+                {
+                  "key": "domain",
+                  "value": "",
+                  "description": "domain"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products Catalog",
+      "item": [
+        {
+          "name": "List and search products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "",
+                  "description": "page"
+                },
+                {
+                  "key": "limit",
+                  "value": "",
+                  "description": "limit"
+                },
+                {
+                  "key": "sort",
+                  "value": "",
+                  "description": "sort"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "",
+                  "description": "categoryId"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create a new product (Owner/Manager only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Gold Ring\",\n  \"slug\": \"gold-ring\",\n  \"sku\": \"RING-001\",\n  \"price\": 499.99,\n  \"stock\": 10,\n  \"customAttributes\": {\n    \"purity\": \"22K\",\n    \"weight\": 5.5\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "List category tree",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create category (Owner/Manager only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rings\",\n  \"slug\": \"rings\",\n  \"parentId\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Media",
+      "item": [
+        {
+          "name": "Upload static files and images",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/media/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "media",
+                "upload"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CMS Content",
+      "item": [
+        {
+          "name": "Get page layout builder configuration JSON",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cms/:pageName",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cms",
+                ":pageName"
+              ],
+              "variable": [
+                {
+                  "key": "pageName",
+                  "value": "",
+                  "description": "pageName"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create or update page sections",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cms/:pageName",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cms",
+                ":pageName"
+              ],
+              "variable": [
+                {
+                  "key": "pageName",
+                  "value": "",
+                  "description": "pageName"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sections\": [\n    {\n      \"type\": \"hero\",\n      \"heading\": \"Welcome to our store\",\n      \"subtitle\": \"Best collection\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blogs CMS",
+      "item": [
+        {
+          "name": "Get public published blog posts list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/blogs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "blogs"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get blog post by slug",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/blogs/slug/:slug",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "blogs",
+                "slug",
+                ":slug"
+              ],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "",
+                  "description": "slug"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CRM & Leads",
+      "item": [
+        {
+          "name": "Web form submission lead intake",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/leads/submit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "leads",
+                "submit"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Brown\",\n  \"email\": \"alice@example.com\",\n  \"phone\": \"1234567890\",\n  \"source\": \"contact_form\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Appointments Booking",
+      "item": [
+        {
+          "name": "Retrieve availability slots for scheduling visits",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/appointments/slots",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "appointments",
+                "slots"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "",
+                  "description": "date"
+                },
+                {
+                  "key": "duration",
+                  "value": "",
+                  "description": "duration"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Book an appointment time slot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/appointments/book",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "appointments",
+                "book"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Jane Doe\",\n  \"customerEmail\": \"jane@example.com\",\n  \"customerPhone\": \"0987654321\",\n  \"serviceName\": \"Bridal Set Fitting\",\n  \"duration\": 60,\n  \"date\": \"2026-07-01\",\n  \"time\": \"11:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders & Checkout",
+      "item": [
+        {
+          "name": "Submit shopping cart checkout order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/checkout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "checkout"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"603d2bfa12a3...\",\n      \"quantity\": 1\n    }\n  ],\n  \"customerDetails\": {\n    \"name\": \"Charlie Green\",\n    \"email\": \"charlie@example.com\",\n    \"phone\": \"5551234567\",\n    \"address\": \"123 Main St\"\n  },\n  \"gateway\": \"mock\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Mock complete pending order payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/:id/mock-pay",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                ":id",
+                "mock-pay"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "id"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Domain Calculators",
+      "item": [
+        {
+          "name": "Compute Gold Value base price and making charges",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/calculators/gold",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "calculators",
+                "gold"
+              ],
+              "query": [
+                {
+                  "key": "weight",
+                  "value": "",
+                  "description": "weight"
+                },
+                {
+                  "key": "ratePerGram",
+                  "value": "",
+                  "description": "ratePerGram"
+                },
+                {
+                  "key": "makingChargePercent",
+                  "value": "",
+                  "description": "makingChargePercent"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics Dashboard",
+      "item": [
+        {
+          "name": "Retrieve store metrics (Owner/Manager only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "analytics",
+                "dashboard"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chatbot Widget",
+      "item": [
+        {
+          "name": "Get widget visual configuration and FAQ data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Store-Id",
+                "value": "{{storeId}}",
+                "type": "text",
+                "description": "Tenant store Id context filter"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/chatbot/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chatbot",
+                "settings"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

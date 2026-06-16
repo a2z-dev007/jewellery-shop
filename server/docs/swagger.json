@@ -1,0 +1,1498 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CommerceOS API Documentation",
+    "version": "1.0.0",
+    "description": "Swagger OpenApi specification for CommerceOS Modular Monolith Backend"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api/v1",
+      "description": "Local development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register a new store and owner",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "John Doe",
+                  "email": "owner@myjewelstore.com",
+                  "password": "secretpassword",
+                  "storeName": "My Jewel Store",
+                  "slug": "myjewelstore",
+                  "businessType": "Jewellery"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Log in to an existing account",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "owner@myjewelstore.com",
+                  "password": "secretpassword"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Refresh expired access token",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "refreshToken": "jwt_refresh_token_here"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Log out of session",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/invite": {
+      "post": {
+        "tags": [
+          "Users & Staff"
+        ],
+        "summary": "Invite a new staff member (Owner/Manager only)",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "staff@myjewelstore.com",
+                  "role": "manager"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/accept-invite": {
+      "post": {
+        "tags": [
+          "Users & Staff"
+        ],
+        "summary": "Accept invitation and register profile",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "token": "invitation_jwt_token",
+                  "name": "Jane Smith",
+                  "password": "staffpassword"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Users & Staff"
+        ],
+        "summary": "List all staff in the store (Owner/Manager only)",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/role": {
+      "put": {
+        "tags": [
+          "Users & Staff"
+        ],
+        "summary": "Update staff member role (Owner only)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "role": "staff"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "delete": {
+        "tags": [
+          "Users & Staff"
+        ],
+        "summary": "Remove staff member (Owner only)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stores": {
+      "post": {
+        "tags": [
+          "Stores"
+        ],
+        "summary": "Create a new store (Super Admin only)",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "New Salon",
+                  "slug": "newsalon",
+                  "businessType": "Salon",
+                  "attributeSchemas": [
+                    {
+                      "key": "stylist",
+                      "label": "Stylist Name",
+                      "type": "string",
+                      "required": true
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Stores"
+        ],
+        "summary": "List all stores",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stores/verify-domain": {
+      "get": {
+        "tags": [
+          "Stores"
+        ],
+        "summary": "Verify domain config for reverse proxy dynamic TLS",
+        "parameters": [
+          {
+            "name": "domain",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": [
+          "Products Catalog"
+        ],
+        "summary": "List and search products",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products Catalog"
+        ],
+        "summary": "Create a new product (Owner/Manager only)",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "Gold Ring",
+                  "slug": "gold-ring",
+                  "sku": "RING-001",
+                  "price": 499.99,
+                  "stock": 10,
+                  "customAttributes": {
+                    "purity": "22K",
+                    "weight": 5.5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "List category tree",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Create category (Owner/Manager only)",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "Rings",
+                  "slug": "rings",
+                  "parentId": null
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/media/upload": {
+      "post": {
+        "tags": [
+          "Media"
+        ],
+        "summary": "Upload static files and images",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cms/{pageName}": {
+      "get": {
+        "tags": [
+          "CMS Content"
+        ],
+        "summary": "Get page layout builder configuration JSON",
+        "parameters": [
+          {
+            "name": "pageName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "CMS Content"
+        ],
+        "summary": "Create or update page sections",
+        "parameters": [
+          {
+            "name": "pageName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "sections": [
+                    {
+                      "type": "hero",
+                      "heading": "Welcome to our store",
+                      "subtitle": "Best collection"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/blogs": {
+      "get": {
+        "tags": [
+          "Blogs CMS"
+        ],
+        "summary": "Get public published blog posts list",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/blogs/slug/{slug}": {
+      "get": {
+        "tags": [
+          "Blogs CMS"
+        ],
+        "summary": "Get blog post by slug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/leads/submit": {
+      "post": {
+        "tags": [
+          "CRM & Leads"
+        ],
+        "summary": "Web form submission lead intake",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "Alice Brown",
+                  "email": "alice@example.com",
+                  "phone": "1234567890",
+                  "source": "contact_form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appointments/slots": {
+      "get": {
+        "tags": [
+          "Appointments Booking"
+        ],
+        "summary": "Retrieve availability slots for scheduling visits",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "duration",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appointments/book": {
+      "post": {
+        "tags": [
+          "Appointments Booking"
+        ],
+        "summary": "Book an appointment time slot",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "customerName": "Jane Doe",
+                  "customerEmail": "jane@example.com",
+                  "customerPhone": "0987654321",
+                  "serviceName": "Bridal Set Fitting",
+                  "duration": 60,
+                  "date": "2026-07-01",
+                  "time": "11:00"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/checkout": {
+      "post": {
+        "tags": [
+          "Orders & Checkout"
+        ],
+        "summary": "Submit shopping cart checkout order",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "items": [
+                    {
+                      "productId": "603d2bfa12a3...",
+                      "quantity": 1
+                    }
+                  ],
+                  "customerDetails": {
+                    "name": "Charlie Green",
+                    "email": "charlie@example.com",
+                    "phone": "5551234567",
+                    "address": "123 Main St"
+                  },
+                  "gateway": "mock"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{id}/mock-pay": {
+      "post": {
+        "tags": [
+          "Orders & Checkout"
+        ],
+        "summary": "Mock complete pending order payment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/calculators/gold": {
+      "get": {
+        "tags": [
+          "Domain Calculators"
+        ],
+        "summary": "Compute Gold Value base price and making charges",
+        "parameters": [
+          {
+            "name": "weight",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "ratePerGram",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "makingChargePercent",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/dashboard": {
+      "get": {
+        "tags": [
+          "Analytics Dashboard"
+        ],
+        "summary": "Retrieve store metrics (Owner/Manager only)",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chatbot/settings": {
+      "get": {
+        "tags": [
+          "Chatbot Widget"
+        ],
+        "summary": "Get widget visual configuration and FAQ data",
+        "parameters": [
+          {
+            "name": "X-Store-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional explicit tenant ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success response wrapper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "success": true,
+                    "data": {},
+                    "message": "Success"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

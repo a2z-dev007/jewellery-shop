@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ERROR_CODES = void 0;
+exports.ERROR_CODES = {
+    UNAUTHORIZED: 'UNAUTHORIZED',
+    FORBIDDEN: 'FORBIDDEN',
+    NOT_FOUND: 'NOT_FOUND',
+    VALIDATION_FAILED: 'VALIDATION_FAILED',
+    INSUFFICIENT_STOCK: 'INSUFFICIENT_STOCK',
+    INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
+    BAD_REQUEST: 'BAD_REQUEST',
+    CONFLICT: 'CONFLICT',
+};
