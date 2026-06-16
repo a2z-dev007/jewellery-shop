@@ -122,7 +122,7 @@ export default function HeroSection() {
           >
             <a
               href="/products"
-              className="w-full sm:w-auto px-8 py-3.5 bg-[#D4AF37] text-black text-xs font-semibold uppercase tracking-widest hover:bg-[#B8960C] hover:scale-[1.02] active:scale-95 transition-all duration-300 rounded-[2px]"
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#F5E6C8] via-[#D4AF37] to-[#B8960C] hover:from-[#EADAB8] hover:via-[#B8960C] hover:to-[#967508] text-black text-xs font-semibold uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all duration-300 rounded-[2px] shadow-lg flex items-center justify-center"
             >
               Explore Collections
             </a>

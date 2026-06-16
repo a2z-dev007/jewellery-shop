@@ -1,7 +1,7 @@
 export const theme = {
   // Business Identity
   businessType: "jewellery",
-  brandName: "Aura Jewellers",
+  brandName: "Aura",
   tagline: "Crafting Memories Since 1985",
   logo: {
     light: "/assets/logo-light.svg",

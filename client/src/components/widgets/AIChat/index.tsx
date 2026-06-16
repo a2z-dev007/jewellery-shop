@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { theme } from "@/config/theme";
+import { usePathname } from "next/navigation";
+import { useUIStore } from "@/store/ui.store";
 import { MessageCircle, X, Send, Sparkles, User } from "lucide-react";
 
 interface Message {
@@ -12,7 +14,8 @@ interface Message {
 }
 
 export default function AIChat() {
-  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const { isAIChatOpen, toggleAIChat } = useUIStore();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -29,6 +32,10 @@ export default function AIChat() {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, isTyping]);
+
+  // Hide AI Concierge on Checkout and Order Success pages
+  const hiddenRoutes = ["/checkout", "/checkout/success", "/checkout/confirmation"];
+  if (hiddenRoutes.includes(pathname)) return null;
 
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
@@ -71,23 +78,195 @@ export default function AIChat() {
   return (
     <>
       {/* Collapsed floating button */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-24 z-40 bg-[#111111] hover:bg-[#222222] border border-[#D4AF37]/50 text-[#D4AF37] p-4 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center cursor-pointer"
+      <motion.button
+        onClick={() => toggleAIChat()}
+        initial={{ opacity: 0, scale: 0.5, y: 50 }}
+        animate={{ 
+          opacity: 1, 
+          scale: 1, 
+          y: [0, -6, 0],
+        }}
+        transition={{
+          y: {
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          },
+          opacity: { duration: 0.4 },
+          scale: { duration: 0.4 },
+        }}
+        whileHover={{ 
+          scale: 1.08,
+          boxShadow: "0 12px 40px rgba(212, 175, 55, 0.45)",
+        }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-6 right-6 z-40 bg-gradient-to-br from-[#111111] to-[#1d1d1d] border border-[#D4AF37]/50 text-[#D4AF37] p-4 rounded-full shadow-[0_8px_30px_rgba(212,175,55,0.2)] group flex items-center justify-center cursor-pointer"
         aria-label="Open AI Concierge"
       >
-        <Sparkles size={22} className="animate-pulse" />
-      </button>
+        {/* Animated Gold Concentric Ripples */}
+        <div className="absolute inset-0 -z-10 rounded-full flex items-center justify-center">
+          <motion.div
+            className="absolute inset-0 rounded-full border border-[#D4AF37]/60"
+            animate={{ scale: [1, 1.8], opacity: [0.6, 0] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeOut" }}
+          />
+          <motion.div
+            className="absolute inset-0 rounded-full border border-[#D4AF37]/40"
+            animate={{ scale: [1, 2.4], opacity: [0.4, 0] }}
+            transition={{ duration: 2.2, delay: 0.8, repeat: Infinity, ease: "easeOut" }}
+          />
+        </div>
+
+        {/* Animated Chatbot SVG Icon */}
+        <div className="w-6 h-6 flex items-center justify-center">
+          <motion.svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="w-6 h-6 text-[#D4AF37]"
+            animate={{
+              y: [0, -1, 1, -1, 0],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            {/* Antenna with pulsing light */}
+            <path d="M12 6V3" stroke="#D4AF37" strokeWidth="1.5" />
+            <motion.circle
+              cx="12"
+              cy="2.5"
+              r="1.2"
+              fill="#D4AF37"
+              stroke="none"
+              animate={{
+                scale: [1, 1.4, 1],
+                opacity: [0.7, 1, 0.7],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            
+            {/* Robot Head Body */}
+            <rect x="4" y="6" width="16" height="13" rx="4" stroke="#D4AF37" strokeWidth="1.7" fill="#111111" />
+            
+            {/* Left Eye */}
+            <motion.ellipse
+              cx="9"
+              cy="12.5"
+              rx="1.3"
+              ry="1.3"
+              fill="#D4AF37"
+              animate={{
+                scaleY: [1, 1, 0.1, 1, 1, 1, 1],
+              }}
+              transition={{
+                duration: 3.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              style={{ originX: "9px", originY: "12.5px" }}
+            />
+            
+            {/* Right Eye */}
+            <motion.ellipse
+              cx="15"
+              cy="12.5"
+              rx="1.3"
+              ry="1.3"
+              fill="#D4AF37"
+              animate={{
+                scaleY: [1, 1, 0.1, 1, 1, 1, 1],
+              }}
+              transition={{
+                duration: 3.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              style={{ originX: "15px", originY: "12.5px" }}
+            />
+            
+            {/* Mouth / Smile */}
+            <motion.path
+              d="M9.5 15.5C10.5 16.3 13.5 16.3 14.5 15.5"
+              stroke="#D4AF37"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              animate={{
+                d: [
+                  "M9.5 15.5C10.5 16.3 13.5 16.3 14.5 15.5",
+                  "M9.5 15.8C10.5 16.1 13.5 16.1 14.5 15.8",
+                  "M9.5 15.5C10.5 16.3 13.5 16.3 14.5 15.5",
+                ]
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            
+            {/* Side ears */}
+            <rect x="2" y="10" width="2" height="5" rx="1" fill="#D4AF37" />
+            <rect x="20" y="10" width="2" height="5" rx="1" fill="#D4AF37" />
+
+            {/* Sparkles floating around */}
+            <motion.path
+              d="M21 4L21 8M19 6L23 6"
+              stroke="#D4AF37"
+              strokeWidth="1"
+              animate={{
+                rotate: 360,
+                scale: [0.8, 1.2, 0.8],
+                opacity: [0.6, 1, 0.6],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              style={{ originX: "21px", originY: "6px" }}
+            />
+            <motion.path
+              d="M4 18L4 22M2 20L6 20"
+              stroke="#D4AF37"
+              strokeWidth="1"
+              animate={{
+                rotate: -360,
+                scale: [0.8, 1.2, 0.8],
+                opacity: [0.6, 1, 0.6],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              style={{ originX: "4px", originY: "20px" }}
+            />
+          </motion.svg>
+        </div>
+
+        {/* Slide-out Text Label */}
+        <span className="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-2 text-xs font-semibold uppercase tracking-wider font-sans select-none whitespace-nowrap transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100">
+          Ask AI
+        </span>
+      </motion.button>
 
       {/* Chat window modal */}
       <AnimatePresence>
-        {isOpen && (
+        {isAIChatOpen && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 100 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 100 }}
             transition={{ type: "spring", damping: 25, stiffness: 220 }}
-            className="fixed bottom-24 right-6 md:right-24 w-[380px] h-[520px] max-w-[calc(100vw-32px)] bg-[#111111] border border-[#D4AF37]/30 shadow-2xl flex flex-col z-50 rounded-[4px] overflow-hidden text-white font-sans"
+            className="fixed bottom-24 right-6 w-[380px] h-[520px] max-w-[calc(100vw-32px)] bg-[#111111] border border-[#D4AF37]/30 shadow-2xl flex flex-col z-50 rounded-[4px] overflow-hidden text-white font-sans"
           >
             {/* Header */}
             <div className="bg-[#1c1c1c] border-b border-[#D4AF37]/20 px-4 py-3 flex items-center justify-between">
@@ -101,7 +280,7 @@ export default function AIChat() {
                 </div>
               </div>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => toggleAIChat(false)}
                 className="text-white/60 hover:text-white hover:bg-white/5 p-1 rounded-full transition-colors"
               >
                 <X size={18} />

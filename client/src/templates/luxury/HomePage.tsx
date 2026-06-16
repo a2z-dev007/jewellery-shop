@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { theme } from "@/config/theme";
 import { useUIStore } from "@/store/ui.store";
 import { useCartStore } from "@/store/cart.store";
@@ -21,7 +21,7 @@ import {
   Heart,
 } from "lucide-react";
 import { useWishlistStore } from "@/store/wishlist.store";
-import { useMemo, useState } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 
 // Mock Products
 const featuredProducts = [
@@ -75,13 +75,118 @@ const testimonials = [
   },
 ];
 
-const goldRate = { 22: 7240, 18: 5920, 14: 4610 };
+const atelierTabs = [
+  {
+    title: "Bridal Couture Embroidery",
+    tagline: "The Royal Trousseau",
+    desc: "A hand-crafted gold choker requires over 120 hours of delicate filigree detailing and precise stone placements by generational artisans.",
+    video: "/videos/hero-3.mp4",
+    poster: "https://images.unsplash.com/photo-1549417229-aa67d3263c09?q=80&w=800&auto=format&fit=crop",
+    details: "Custom family heritage settings & BIS hallmarked 22K gold."
+  },
+  {
+    title: "Heritage Gold Classics",
+    tagline: "Generational Filigree",
+    desc: "Melting and hand-embossing pure 22 Karat gold sheet by sheet, preserving ancient Meenakari and Jadau techniques.",
+    video: "/videos/hero-2.mp4",
+    poster: "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?q=80&w=800&auto=format&fit=crop",
+    details: "BIS certified hallmarking and transparent buyback guarantee."
+  },
+  {
+    title: "Hearts & Arrows Solitaires",
+    tagline: "Precision Laser Setting",
+    desc: "Aligning certified hearts-and-arrows diamonds in 18K white gold and platinum, maximizing reflection and fire.",
+    video: "/videos/hero-1.mp4",
+    poster: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800&auto=format&fit=crop",
+    details: "Certified conflict-free IGI & GIA standard solitaires."
+  },
+  {
+    title: "Modern Sterling Silver",
+    tagline: "Artisanal Molding",
+    desc: "Molding 925 sterling silver into minimalist, contemporary bracelets and bands for everyday wear.",
+    video: "/videos/hero-4.mp4",
+    poster: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
+    details: "Chic contemporary sterling silver collections."
+  }
+];
 
 export default function HomePage() {
   const { toggleAppointmentModal } = useUIStore();
   const addToCart = useCartStore((state) => state.addToCart);
   const { toggleWishlist, isInWishlist } = useWishlistStore();
+  const [activeTab, setActiveTab] = useState("all");
+  const [goldRate, setGoldRate] = useState({ 22: 7240, 18: 5920, 14: 4610 });
 
+  // Atelier showcase state
+  const [activeAtelierTab, setActiveAtelierTab] = useState(0);
+  const [atelierVideoVisible, setAtelierVideoVisible] = useState(true);
+  const atelierVideoRef = useRef<HTMLVideoElement>(null);
+  const atelierSectionRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress: atelierScrollProgress } = useScroll({
+    target: atelierSectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const isManualClickRef = useRef(false);
+  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useMotionValueEvent(atelierScrollProgress, "change", (latest) => {
+    if (isManualClickRef.current) return;
+
+    const startProgress = 0.35;
+    const endProgress = 0.65;
+
+    if (latest < startProgress) {
+      if (activeAtelierTab !== 0) setActiveAtelierTab(0);
+    } else if (latest > endProgress) {
+      if (activeAtelierTab !== 3) setActiveAtelierTab(3);
+    } else {
+      const normalized = (latest - startProgress) / (endProgress - startProgress);
+      const tabCount = atelierTabs.length;
+      const index = Math.min(Math.floor(normalized * tabCount), tabCount - 1);
+      if (index !== activeAtelierTab) {
+        setActiveAtelierTab(index);
+      }
+    }
+  });
+
+  const handleTabChange = (idx: number) => {
+    if (idx === activeAtelierTab) return;
+    
+    isManualClickRef.current = true;
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+    }
+    
+    setAtelierVideoVisible(false);
+    setTimeout(() => {
+      setActiveAtelierTab(idx);
+      setAtelierVideoVisible(true);
+    }, 200);
+
+    clickTimeoutRef.current = setTimeout(() => {
+      isManualClickRef.current = false;
+    }, 2500); // Lock scroll spy for 2.5s after clicking
+  };
+
+  useEffect(() => {
+    if (atelierVideoRef.current) {
+      atelierVideoRef.current.load();
+      atelierVideoRef.current.play().catch((err) => {
+        console.log("Atelier video playback error:", err);
+      });
+    }
+  }, [activeAtelierTab]);
+
+  // Parallax video banner refs & transformations
+  const bannerContainerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: bannerScrollProgress } = useScroll({
+    target: bannerContainerRef,
+    offset: ["start end", "end start"],
+  });
+  const bannerVideoY = useTransform(bannerScrollProgress, [0, 1], ["-15%", "15%"]);
+  
   // Add mock interactive state for gold rate calculator on landing page
   const [calcWeight, setCalcWeight] = useState("10");
   const [calcPurity, setCalcPurity] = useState("22");
@@ -207,7 +312,7 @@ export default function HomePage() {
                 href={`https://wa.me/${theme.contact.whatsapp}?text=Hi%20Aura%20Jewellers,%20I%20would%20like%20to%20get%20a%20valuation%20for%20a%20${calcWeight}g%20${calcPurity}K%20jewellery%20set.`}
                 target="_blank"
                 rel="noreferrer"
-                className="bg-[#D4AF37] text-black px-6 py-3 text-xs uppercase tracking-widest font-semibold hover:bg-[#B8960C] transition-colors rounded-[2px]"
+                className="bg-gradient-to-r from-[#F5E6C8] via-[#D4AF37] to-[#B8960C] hover:from-[#EADAB8] hover:via-[#B8960C] hover:to-[#967508] text-black px-6 py-3 text-xs uppercase tracking-widest font-semibold transition-all duration-300 rounded-[2px] shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.99]"
               >
                 Inquire Rates
               </a>
@@ -324,6 +429,88 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 5.5 INTERACTIVE ATELIER SHOWCASE */}
+      <section ref={atelierSectionRef} className="py-24 px-4 md:px-8 bg-[#FAFAF8] border-t border-[#E8E0D0]/30">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16 space-y-3">
+            <span className="text-[#D4AF37] font-sans text-xs tracking-[0.3em] uppercase font-bold">Atelier Craftsmanship</span>
+            <h2 className="font-serif text-3xl md:text-5xl text-black font-light leading-tight">Artistry in Motion</h2>
+            <div className="w-16 h-[1px] bg-[#D4AF37] mx-auto mt-4" />
+            <p className="max-w-xl mx-auto text-xs md:text-sm text-black/60 font-light mt-4">
+              Watch how our master karigars shape heritage jewelry designs step by step. Select a collection below to witness the creation.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Left Column: Video Player */}
+            <div className="lg:col-span-7 relative aspect-[16/10] bg-[#111111] border border-[#D4AF37]/35 rounded-[3px] overflow-hidden shadow-2xl">
+              <motion.video
+                ref={atelierVideoRef}
+                src={atelierTabs[activeAtelierTab].video}
+                poster={atelierTabs[activeAtelierTab].poster}
+                animate={{ opacity: atelierVideoVisible ? 0.8 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+              />
+              {/* Overlays */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-5 left-5 z-10 text-white select-none">
+                <span className="text-[#D4AF37] text-[10px] uppercase tracking-widest font-semibold font-sans">
+                  {atelierTabs[activeAtelierTab].tagline}
+                </span>
+                <p className="text-xs text-white/70 mt-1 max-w-md font-light">
+                  {atelierTabs[activeAtelierTab].details}
+                </p>
+              </div>
+            </div>
+
+            {/* Right Column: Interactive Tabs */}
+            <div className="lg:col-span-5 space-y-4">
+              {atelierTabs.map((tab, idx) => {
+                const isActive = activeAtelierTab === idx;
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => handleTabChange(idx)}
+                    className={`w-full text-left p-6 border transition-all duration-300 rounded-[2px] cursor-pointer flex flex-col justify-between space-y-2 relative overflow-hidden group ${
+                      isActive
+                        ? "bg-[#111111] text-white border-[#D4AF37]/60 shadow-lg"
+                        : "bg-white text-black/80 border-[#E8E0D0]/40 hover:border-[#D4AF37]/40 hover:bg-[#FAFAF8]"
+                    }`}
+                  >
+                    {/* Active highlight bar */}
+                    {isActive && (
+                      <span className="absolute left-0 top-0 w-[3px] h-full bg-[#D4AF37]" />
+                    )}
+                    <span className={`text-[10px] uppercase tracking-widest font-semibold ${
+                      isActive ? "text-[#D4AF37]" : "text-black/40 group-hover:text-[#D4AF37] transition-colors"
+                    }`}>
+                      0{idx + 1} &bull; {tab.tagline}
+                    </span>
+                    <h3 className={`font-serif text-lg ${
+                      isActive ? "text-[#F5E6C8]" : "text-black group-hover:text-[#D4AF37] transition-colors"
+                    }`}>
+                      {tab.title}
+                    </h3>
+                    <p className={`text-xs font-light leading-relaxed ${
+                      isActive ? "text-white/60" : "text-black/50"
+                    }`}>
+                      {tab.desc}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 6. BRIDAL JEWELLERY SECTION */}
       <section className="relative min-h-[500px] flex items-center bg-[#0d0d0d] text-white">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center px-4 md:px-8 py-20">
@@ -346,7 +533,7 @@ export default function HomePage() {
             <div className="pt-6">
               <button
                 onClick={() => toggleAppointmentModal(true)}
-                className="bg-[#D4AF37] hover:bg-[#B8960C] text-black px-8 py-4 text-xs font-semibold uppercase tracking-widest transition-colors rounded-[2px]"
+                className="bg-gradient-to-r from-[#F5E6C8] via-[#D4AF37] to-[#B8960C] hover:from-[#EADAB8] hover:via-[#B8960C] hover:to-[#967508] text-black px-8 py-4 text-xs font-semibold uppercase tracking-widest transition-all duration-300 rounded-[2px] shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.99]"
               >
                 Book Bridal Consultation
               </button>
@@ -401,29 +588,57 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 8. APPOINTMENT CTA SECTION */}
-      <section className="relative isolate overflow-hidden bg-[#0a0a0a] text-white py-20 px-4 text-center border-t border-[#D4AF37]/35">
-        <video
-          className="absolute inset-0 z-0 h-full w-full object-cover opacity-30"
+      {/* 7.5 PARALLAX VIDEO BANNER */}
+      <section
+        ref={bannerContainerRef}
+        className="relative min-h-screen w-full overflow-hidden flex items-center justify-center bg-black border-y border-[#D4AF37]/25 animate-fadeIn"
+      >
+        <motion.video
+          src="/videos/main-hero-2.mp4"
           autoPlay
           muted
           loop
           playsInline
           preload="metadata"
-          poster="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1200&auto=format&fit=crop"
-        >
-          <source src="/videos/hero-4.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#1c1c1c]/95 via-black/80 to-[#0a0a0a]/95" />
+          className="absolute inset-0 w-full h-full object-cover scale-110 opacity-50 pointer-events-none"
+          style={{ y: bannerVideoY }}
+        />
+        {/* Dark radial overlay */}
+        <div className="absolute inset-0 bg-radial-gradient-to-c from-black/10 via-black/60 to-black/95 z-10" />
+
+        <div className="relative z-20 text-center space-y-8 px-6 select-none max-w-4xl">
+          <span className="text-[#D4AF37] font-sans text-xs tracking-[0.35em] uppercase font-bold">
+            Bespoke Legacy
+          </span>
+          <h2 className="font-serif text-4xl md:text-6xl text-white font-light tracking-wide leading-tight">
+            Purity In Design. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F5E6C8] via-[#D4AF37] to-[#B8960C] italic">
+              Perfection In Detail.
+            </span>
+          </h2>
+          <div className="pt-2">
+            <Link
+              href="/products"
+              className="inline-flex items-center space-x-2 bg-gradient-to-r from-[#F5E6C8] via-[#D4AF37] to-[#B8960C] hover:from-[#EADAB8] hover:via-[#B8960C] hover:to-[#967508] text-black px-6 py-3.5 text-xs font-semibold uppercase tracking-widest transition-all duration-300 rounded-[2px] shadow-lg hover:scale-[1.02] active:scale-95"
+            >
+              <span>Explore The Catalog</span>
+              <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. APPOINTMENT CTA SECTION */}
+      <section className="relative bg-[#FAFAF8] text-black py-20 px-4 text-center border-t border-[#D4AF37]/20">
         <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-          <h2 className="font-serif text-3xl md:text-5xl leading-tight">Visit Us. Experience The Legacy.</h2>
-          <p className="font-sans text-sm md:text-base text-white/70 max-w-xl mx-auto font-light leading-relaxed">
+          <h2 className="font-serif text-3xl md:text-5xl leading-tight text-[#111111]">Visit Us. Experience The Legacy.</h2>
+          <p className="font-sans text-sm md:text-base text-black/60 max-w-xl mx-auto font-light leading-relaxed">
             Schedule a private concierge session at our luxury Lucknow boutique for custom bridal designs and solitaire certifications.
           </p>
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={() => toggleAppointmentModal(true)}
-              className="w-full sm:w-auto px-8 py-4 bg-[#D4AF37] text-black text-xs font-semibold uppercase tracking-widest hover:bg-[#B8960C] transition-all duration-300 rounded-[2px] flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#F5E6C8] via-[#D4AF37] to-[#B8960C] hover:from-[#EADAB8] hover:via-[#B8960C] hover:to-[#967508] text-black text-xs font-semibold uppercase tracking-widest transition-all duration-300 rounded-[2px] flex items-center justify-center space-x-2 shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.99]"
             >
               <Calendar size={14} />
               <span>Schedule Viewing</span>
@@ -432,7 +647,7 @@ export default function HomePage() {
               href={`https://wa.me/${theme.contact.whatsapp}`}
               target="_blank"
               rel="noreferrer"
-              className="w-full sm:w-auto px-8 py-4 border border-white/20 text-white text-xs font-semibold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 rounded-[2px] flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto px-8 py-4 border border-black/15 text-black hover:bg-black hover:text-white transition-all duration-300 rounded-[2px] flex items-center justify-center space-x-2"
             >
               <MessageSquare size={14} />
               <span>WhatsApp Concierge</span>
