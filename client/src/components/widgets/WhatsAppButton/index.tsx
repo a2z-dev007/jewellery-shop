@@ -26,7 +26,7 @@ export default function WhatsAppButton() {
         duration: 1.2,
         repeat: Infinity,
         repeatDelay: 4, // shake every 4 seconds
-        ease: "easeInOut",
+        ease: "easeInOut" as const,
       }
     },
     hover: {
@@ -34,7 +34,7 @@ export default function WhatsAppButton() {
       transition: {
         duration: 0.6,
         repeat: Infinity,
-        ease: "easeInOut",
+        ease: "easeInOut" as const,
       }
     }
   };
